@@ -9,15 +9,15 @@ function init() {
 	stage.snapPixelsEnabled = true;
 
 	// frames per second
-	Ticker.setFPS(2);
+	Ticker.setFPS(16);
 	Ticker.addListener(window);
 
-	player = new Player("images/dance.png");
+	player = new Player();
 	player.x = 200;
 	player.y = 100;
 	player.create();
 	stage.addChild(player.obj);
-	window.addEventListener("keydown", player.move, true);
+	window.addEventListener("keydown", player.edge, true);
 }
 
 function tick() {
