@@ -22,7 +22,7 @@ function init() {
 
 	ground1 = new Ground1();
 	ground1.x = 0;
-	ground1.y = height / 5;
+	ground1.y = 0;
 	ground1.create();
 	stage.addChild(ground1.obj);
 
