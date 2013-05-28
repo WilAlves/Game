@@ -1,4 +1,3 @@
-
 var Player = function()
 {
 	this.x = 0;
@@ -9,7 +8,7 @@ var Player = function()
 	var create = function() {
 
 		spriteSheet = {
-			"animations": { "dead":[0, 15], "go":[16,31], "run":[32,46], "down":[111,127], "jump":[48,64]},
+			"animations": { "dead":[1, 10], "go":[16,30], "run":[43,61], "down":[110,120], "jump":[62,75], "fly":[180, 188]},
 			"images": [image],
 			"frames": {"regX": 0, "height": 37, "count": 464, "regY": 0, "width": 37}};
 
@@ -22,6 +21,7 @@ var Player = function()
 		ss.getAnimation("run").next = "dead";
 		ss.getAnimation("down").next = "dead";
 		ss.getAnimation("jump").next = "dead";
+		ss.getAnimation("fly").next = "dead";
 		player.gotoAndPlay("dead");
 
 		player.x = this.x;
@@ -34,17 +34,20 @@ var Player = function()
 
 	var edge = function(e){
 		switch (e.keyCode){
-			case 38:
+			case 68:
 				p.gotoAndPlay("go");
 				break;
-			case 40:
+			case 39:
 				p.gotoAndPlay("run");
 				break;
-			case 90:
+			case 83:
 				p.gotoAndPlay("down");
 				break;
-			case 66:
+			case 32:
 				p.gotoAndPlay("jump");
+				break;
+			case 87:
+				p.gotoAndPlay("fly");
 				break;
 		}
 	}
