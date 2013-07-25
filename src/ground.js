@@ -1,41 +1,53 @@
-//var Ground = function()
-//{
-	var layer = new Array('img/jsplatformer4_b0.png','img/jsplatformer4_b1.png')
-//	new ParallaxScrolling(ctx, layer);
+var Ground = function()
+{
+	var layer = "img/jsplatformer4_b0.png";
+	var layers;
 
-	function Layer(s, x, y) {
-		this.img = new Image();
-		this.img.src = s;
-		this.x = x;
-		this.y = y;
+	var create = function() {
+				layers = new Bitmap(layer);
+				layers.x = this.x;
+				layers.y = this.y;
+				this.obj = layers;
 	}
 
-
-	function ParallaxScrolling(ctx, imgdata) {
-		var scroll = this;
-		if( typeof imgdata === 'undefined' ) imgdata = [];
-			this.ctx = ctx;
-			this.layers = new Array(imgdata.length);
-			for(i=0; i<imgdata.length; i++) {
-				this.layers[i] = new Layer(imgdata[i], 0, 0);
-			}
-			this.Move = function() {
-			for(var i=1; i<scroll.layers.length; i++) {
-				if( scroll.layers[i].x > scroll.layers[i].img.width ) scroll.layers[i].x = 0;
-					scroll.layers[i].x += i;
-				}
-			};
-			this.Draw = function() {
-				scroll.Move();
-				for(var i=0; i<scroll.layers.length; i++) {
-					var x1 = (scroll.layers[i].x-scroll.layers[i].img.width);
-					scroll.ctx.drawImage(scroll.layers[i].img, 0, 0, scroll.layers[i].img.width, scroll.layers[i].img.height, scroll.layers[i].x, 0,     scroll.layers[i].img.width, scroll.layers[i].img.height);
-					scroll.ctx.drawImage(scroll.layers[i].img, 0, 0, scroll.layers[i].img.width, scroll.layers[i].img.height,x1, 0, scroll.layers[i].img.width, scroll.layers[i].img.height);
-				}
-			}
+	return{
+		create: create
 	}
-//	return{
-//		Layer: Layer,
-//		ParallaxScrolling: ParallaxScrolling
-//	}
-//}
+}
+
+var Ground1 = function()
+{
+	var layer1 = "img/jsplatformer4_b1.png";
+	var layers1, layers2;
+
+	var create1 = function() {
+
+		layers1 = new Bitmap(layer1);
+		layers1.x = canvas.width;
+		layers1.y = this.y;
+		this.obj = layers1;
+
+		layers2 = new Bitmap(layer1);
+		layers2.x = -1090;
+		layers2.y = this.y;
+		this.obj2 = layers2;
+
+	}
+	var update = function() {
+			var w = 1704;
+
+			if(-layers2.x  > w)
+				layers2.x = w;
+
+			if(-layers1.x > w )
+				layers1.x = w;
+
+			layers1.x -= 5;
+			layers2.x -= 5;
+	}
+
+	return{
+		create1: create1,
+		update: update
+	}
+}
