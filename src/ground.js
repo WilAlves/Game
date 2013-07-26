@@ -28,22 +28,22 @@ var Ground1 = function()
 		this.obj = layers1;
 
 		layers2 = new Bitmap(layer1);
-		layers2.x = -1090;
+		layers2.x = -1104.5;
 		layers2.y = this.y;
 		this.obj2 = layers2;
 
 	}
 	var update = function() {
-			var w = 1704;
+			var w = 1700;
 
-			if(-layers2.x  > w)
-				layers2.x = w;
-
-			if(-layers1.x > w )
+			if(-layers1.x >= w )
 				layers1.x = w;
 
-			layers1.x -= 5;
-			layers2.x -= 5;
+			if(-layers2.x  >= w)
+				layers2.x = w;
+
+				layers1.x -= 5;
+				layers2.x -= 5;
 	}
 
 	return{
