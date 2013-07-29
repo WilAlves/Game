@@ -19,6 +19,7 @@ function init() {
 	ground.y = 0;
 	ground.create();
 	stage.addChild(ground.obj);
+	stage.addChild(ground.obj2);
 
 	ground1 = new Ground1();
 	ground1.x = 0;
@@ -29,7 +30,7 @@ function init() {
 
 	player = new Player();
 	player.x = width / 2;
-	player.y = 280;
+	player.y = 180;
 	player.create();
 	stage.addChild(player.obj);
 	window.addEventListener("keydown", player.edge, true);
@@ -39,4 +40,5 @@ function init() {
 function tick() {
 	stage.update();
 	ground1.update();
+	ground.update();
 	}
