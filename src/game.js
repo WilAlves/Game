@@ -1,4 +1,4 @@
-var ground, canvas, stage, player, width, heigth;
+var ground, canvas, stage, player, width, heigth, obstacle;
 
 function init() {
 
@@ -28,9 +28,15 @@ function init() {
 	stage.addChild(ground1.obj);
 	stage.addChild(ground1.obj2);
 
+	obstacle = new Obstacle();
+	obstacle.x = width;
+	obstacle.y = 270;
+	obstacle.create();
+	stage.addChild(obstacle.obj);
 	player = new Player();
-	player.x = width / 2;
-	player.y = 180;
+
+	player.x = 10;
+	player.y = 190;
 	player.create();
 	stage.addChild(player.obj);
 	window.addEventListener("keydown", player.edge, true);
@@ -41,4 +47,8 @@ function tick() {
 	stage.update();
 	ground1.update();
 	ground.update();
+	obstacle.update();
+	if(player.x  == obstacle.x)
+		console.log(player.x);
+//		console.log(obstacle.x);
 	}
