@@ -8,9 +8,9 @@ var Player = function()
 	var create = function() {
 
 		spriteSheet = {
-			"animations": { "dead":[0, 1], "go":[2, 4], "run":[43,61], "down":[110,120], "jump":[62,75], "fly":[180, 188]},
+			"animations": { "dead":[0, 1], "go":[2, 4]},
 			"images": [image],
-			"frames": {"height": 141, "count": 9, "width": 161}};
+			"frames": {"height": 141, "width": 161}};
 
 		var ss = new SpriteSheet(spriteSheet);
 		var player = new BitmapAnimation(ss);
@@ -19,48 +19,40 @@ var Player = function()
 		ss.getAnimation("dead").frequency = 3;
 		ss.getAnimation("go").frequency = 8;
 		ss.getAnimation("go").next = "dead";
-//		ss.getAnimation("run").next = "dead";
-//		ss.getAnimation("down").next = "dead";
-//		ss.getAnimation("jump").next = "dead";
-//		ss.getAnimation("fly").next = "dead";
 		player.gotoAndPlay("dead");
 
 		player.x = this.x;
 		player.y = this.y;
-		player.snapToPixel = true;
-		player.mouseEnabled = false;
 		this.obj = player;
 		p = player;
 	}
 
-	var edge = function(e){
-		switch (e.keyCode){
-			case 68:
-				p.gotoAndPlay("go");
-				break;
-			case 32:
-				this.x = this.x + 1;
-				break;
-//			case 83:
-//				p.gotoAndPlay("down");
-//				break;
-//			case 32:
-//				p.gotoAndPlay("jump");
-//				break;
-//			case 87:
-//				p.gotoAndPlay("fly");
-//				break;
-		}
-	}
+	var keysDown = {};
+	addEventListener("keydown", function (e) {
+		keysDown[e.keyCode] = true;
+			}, false);
+
+	addEventListener("keyup", function (e) {
+			delete keysDown[e.keyCode];
+				}, false);
+
 
 	var update = function() {
-		this.obj.x = this.x;
-		this.obj.y = this.y;
+		if(32 in keysDown)
+			p.gotoAndPlay("go");
+		if(39 in keysDown)
+			p.x += 5;
+			if((p.x + 170) > width)
+				p.x = width - 172;
+		if(37 in keysDown)
+			p.x -= 10;
+			if(p.x < 0)
+				p.x = 0;
 	}
 
 	return {
 		create: create,
-		edge: edge,
+	//	edge: edge,
 		update: update
 	}
 }

@@ -39,7 +39,6 @@ function init() {
 	player.y = 190;
 	player.create();
 	stage.addChild(player.obj);
-	window.addEventListener("keydown", player.edge, true);
 
 }
 
@@ -48,7 +47,5 @@ function tick() {
 	ground1.update();
 	ground.update();
 	obstacle.update();
-	if(player.x  == obstacle.x)
-		console.log(player.x);
-//		console.log(obstacle.x);
+	player.update();
 	}
