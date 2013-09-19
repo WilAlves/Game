@@ -9,23 +9,32 @@ function init() {
 	height = canvas.height;
 
 	//background
-	createBox(350,008,350,415,0.9,1,.5,b2Body.b2_staticBody,null);
-	createBox(350,008,350,010,0.9,1,.5,b2Body.b2_staticBody,null);
-	createBox(008,350,008,350,0.9,1,.5,b2Body.b2_staticBody,null);
-	createBox(008,350,595,350,0.9,1,.5,b2Body.b2_staticBody,null);
+	createBox(350,008,350,415,40,.8,.1,b2Body.b2_staticBody,false,null);
+	createBox(350,008,350,010,40,.8,.1,b2Body.b2_staticBody,false,null);
+	createBox(008,350,008,350,40,.8,.1,b2Body.b2_staticBody,false,null);
+	createBox(008,350,595,350,40,.8,.1,b2Body.b2_staticBody,false,null);
 
-	//boxCar
-	boxCar = createBox(43,10,60,375,30.0,0.0,.4,b2Body.b2dynamicBody,document.getElementById("car"));
-	join1  = createBox(05,05,35,375,30.0,0.0,.4,b2Body.b2dynamicBody,null);
-	join2  = createBox(05,05,87,375,30.0,0.0,.4,b2Body.b2dynamicBody,null);
+	//joints and ball left
+	joint1_1 = createBox(03,05,275,375,40,.8,.1,b2Body.b2_dynamicBody,true,null);
+	ball1    = createBall(     275,385,40,.8,1,b2Body.b2_dynamicBody,document.getElementById("roda"));
 
-	//wheels
-	wheel1 = createBall(35,390,0.1,.4,.3,b2Body.b2_dynamicBody,document.getElementById("roda"));
-	wheel2 = createBall(87,390,0.1,.4,.3,b2Body.b2_dynamicBody,document.getElementById("roda"));
+	//joints and ball right
+	joint2_2 = createBox(03,05,325,375,40,.8,.1,b2Body.b2_dynamicBody,true,null);
+	ball2    = createBall (    328,385,40,.8,1,b2Body.b2_dynamicBody,document.getElementById("roda"));
 
-	createCar(boxCar, join1, 35, 375,  wheel1, 35, 390, join2, 87, 375, wheel2, 87, 390);
+	axle     = createBox(45,15,300,370,30,.8,1,b2Body.b2_dynamicBody,true,document.getElementById("car"));
 
-	//debugDraw();
+	createRevolutionJoint(joint1_1, 275, 375, ball1, 275, 385);
+	createPrismaticJoint( axle, 300, 370, joint1_1, 275, 375, ball1, 275, 385);
+
+	createRevolutionJoint(joint2_2, 325, 375, ball2, 328, 385);
+	createPrismaticJoint( axle, 385, 375, joint2_2, 325, 375, ball2, 328, 385);
+//	createDistanceJoint(joint1_1, 200, 385, ball1, 200, 370);
+
+
+	//
+
+	debugDraw();
 
 	ground = new Ground();
 	ground.x = 0;
