@@ -1,4 +1,4 @@
-var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5;
+var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5, left = false, right = false, motorSpeed = 0, keysDown = {}, terrainY = 123, x = -1;
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 	, b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -28,7 +28,9 @@ function debugDraw()
 	debugDraw.SetFillAlpha(.1);    //define transparency
 	debugDraw.SetLineThickness(1.0);
 	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-	world.SetDebugDraw(debugDraw);
+	debugDraw = world.SetDebugDraw(debugDraw);
+
+//	return debugDraw;
 }
 
 function createBox(width,height,pX,pY,a,b,c,type,sensor,data)
@@ -46,11 +48,11 @@ function createBox(width,height,pX,pY,a,b,c,type,sensor,data)
 
 	fixtureDef.shape = new b2PolygonShape;
 	fixtureDef.shape.SetAsBox(width/SCALE,height/SCALE);
-	var createBox = world.CreateBody(bodyDef);
+	var Box = world.CreateBody(bodyDef);
 
-	createBox.CreateFixture(fixtureDef);
+	Box.CreateFixture(fixtureDef);
 
-		return createBox;
+		return Box;
 }
 
 function createBall(pX,pY,a,b,c,type,data)
@@ -66,51 +68,74 @@ function createBall(pX,pY,a,b,c,type,data)
 	fixtureDef.restitution = c;
 
 	fixtureDef.shape =  new b2CircleShape(0.45);
-	var createBall = world.CreateBody(bodyDef);
+	var Ball = world.CreateBody(bodyDef);
 
-	createBall.CreateFixture(fixtureDef);
+	Ball.CreateFixture(fixtureDef);
 
-		return createBall;
+		return Ball;
 }
 
-function createRevolutionJoint(teste5, jx1, jy1, teste1, wx1, wy1)
+function createRevolutionJoint(axle, ax, ay, joint, jx, jy)
 {
 	var revoluteJointDef = new b2RevoluteJointDef();
-	revoluteJointDef.Initialize(teste5, teste1, teste1.GetWorldCenter());
-	revoluteJointDef.maxMotorTorque = 1000.0;
-	revoluteJointDef.motorSpeed = 0.0;
+	revoluteJointDef.Initialize(axle, joint, joint.GetWorldCenter());
+	revoluteJointDef.maxMotorTorque = 10000;
+//	revoluteJointDef.motorSpeed = 0.0;
 	revoluteJointDef.enableMotor = true;
-	revoluteJointDef.lowerAngle = -Math.PI/2;
-	revoluteJointDef.upperAngle = Math.PI*8;
-	revoluteJointDef.enableLimit = true;
-	world.CreateJoint(revoluteJointDef);
+	var jointRev = world.CreateJoint(revoluteJointDef);
+
+	return jointRev;
 }
-function createDistanceJoint(teste5, tx5, ty5, teste1, tx1, ty1)
+
+function createDistanceJoint(joint_, jx, jy, ball, bx, by)
 {
 	var myjoint = new b2DistanceJointDef();
-	var worldAnchorOnBody1 = new b2Vec2(tx5/SCALE, ty5/SCALE);
-	var worldAnchorOnBody2 = new b2Vec2(tx1/SCALE, ty1/SCALE);
-	myjoint.Initialize(teste5, teste1, worldAnchorOnBody1,worldAnchorOnBody2);
-	myjoint.collideConnected = true;
-	myjoint.frequencyHz = 1.0;
-	myjoint.dampingRatio = 0.1;
-	var distance_joint = world.CreateJoint(myjoint);
+	var worldAnchorOnBody1 = new b2Vec2(jx/SCALE, jy/SCALE);
+	var worldAnchorOnBody2 = new b2Vec2(bx/SCALE, by/SCALE);
+	myjoint.Initialize(joint_, ball, worldAnchorOnBody1,worldAnchorOnBody2);
+//	myjoint.collideConnected = true;
+	myjoint.frequencyHz = 0.001;
+	myjoint.dampingRatio = 10;
+	var jointDist = world.CreateJoint(myjoint);
 
+	return jointDist;
 }
-function createPrismaticJoint(teste5, tx5, ty5, teste1, tx1, ty1, teste2, tx2, ty2)
+
+function createPrismaticJoint(axle, axl, ayl, joint1, jtx1, jty1, joint2, jyx2, jty2)
 {
-	var yy = Math.cos(angle);
-	var xx = Math.sin(angle);
 	var prismaticJointDef = new b2PrismaticJointDef();
-	var worldaxis = new b2Vec2(xx,yy);
-	prismaticJointDef.Initialize(teste5, teste1, teste2.GetWorldCenter(), worldaxis);
-	prismaticJointDef.lowerTranslation = -10; // in the direction of vector
-	prismaticJointDef.upperTranslation = 10; // opposite the direction of vector
-	prismaticJointDef.enableLimit = false;
+	prismaticJointDef.lowerTranslation = -20/SCALE; // in the direction of vector
+	prismaticJointDef.upperTranslation = 5/SCALE; // opposite the direction of vector
+	prismaticJointDef.enableMotor = true;
+	prismaticJointDef.enableLimit = true;
+	var worldaxis = new b2Vec2(0,1);
+	prismaticJointDef.Initialize(axle, joint1, joint1.GetWorldCenter(), worldaxis);
 	var prismatic_joint1 = world.CreateJoint(prismaticJointDef);
 
-	worldaxis.x = -xx;
-	worldaxis.y = yy;
-	prismaticJointDef.Initialize(teste5, teste1, teste2.GetWorldCenter(), worldaxis);
+	prismaticJointDef.Initialize(axle, joint2, joint2.GetWorldCenter(), worldaxis);
 	var prismatic_joint2 = world.CreateJoint(prismaticJointDef);
+
 }
+/*
+*/
+
+//
+addEventListener("keydown", function (e) {
+	keysDown[e.keyCode] = true;
+}, false);
+
+addEventListener("keyup", function (e) {
+	delete keysDown[e.keyCode];
+}, false);
+
+
+//	A.GetWorldCenter().x*30;
+//interaction mouse
+//function pressHandler( e ) {
+//	var offset = { x: this.x - e.stageX };
+//	e.onMouseMove = function ( ev ) {
+//	if( ev.stageX < 480 )
+//		if( ev.stageX + offset.x <= 380 && ev.stageX + offset.x >= 5 )
+//			e.target.x = ev.stageX + offset.x;
+//	}
+//}
