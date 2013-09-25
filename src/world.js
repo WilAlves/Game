@@ -1,4 +1,4 @@
-var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5;
+var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5, left = false, right = false, motorSpeed = 0, keysDown = {}, nextHill;
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 	, b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -28,7 +28,9 @@ function debugDraw()
 	debugDraw.SetFillAlpha(.1);    //define transparency
 	debugDraw.SetLineThickness(1.0);
 	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-	world.SetDebugDraw(debugDraw);
+	debugDraw = world.SetDebugDraw(debugDraw);
+
+//	return debugDraw;
 }
 
 function createBox(width,height,pX,pY,a,b,c,type,sensor,data)
@@ -46,11 +48,11 @@ function createBox(width,height,pX,pY,a,b,c,type,sensor,data)
 
 	fixtureDef.shape = new b2PolygonShape;
 	fixtureDef.shape.SetAsBox(width/SCALE,height/SCALE);
-	var createBox = world.CreateBody(bodyDef);
+	var Box = world.CreateBody(bodyDef);
 
-	createBox.CreateFixture(fixtureDef);
+	Box.CreateFixture(fixtureDef);
 
-		return createBox;
+		return Box;
 }
 
 function createBall(pX,pY,a,b,c,type,data)
@@ -66,51 +68,231 @@ function createBall(pX,pY,a,b,c,type,data)
 	fixtureDef.restitution = c;
 
 	fixtureDef.shape =  new b2CircleShape(0.45);
-	var createBall = world.CreateBody(bodyDef);
+	var Ball = world.CreateBody(bodyDef);
 
-	createBall.CreateFixture(fixtureDef);
+	Ball.CreateFixture(fixtureDef);
 
-		return createBall;
+		return Ball;
 }
 
-function createRevolutionJoint(teste5, jx1, jy1, teste1, wx1, wy1)
+function createRevolutionJoint(axle, ax, ay, joint, jx, jy)
 {
 	var revoluteJointDef = new b2RevoluteJointDef();
-	revoluteJointDef.Initialize(teste5, teste1, teste1.GetWorldCenter());
-	revoluteJointDef.maxMotorTorque = 1000.0;
-	revoluteJointDef.motorSpeed = 0.0;
+	revoluteJointDef.Initialize(axle, joint, joint.GetWorldCenter());
+	revoluteJointDef.maxMotorTorque = 10000;
+i//	revoluteJointDef.motorSpeed = 0.0;
 	revoluteJointDef.enableMotor = true;
-	revoluteJointDef.lowerAngle = -Math.PI/2;
-	revoluteJointDef.upperAngle = Math.PI*8;
-	revoluteJointDef.enableLimit = true;
-	world.CreateJoint(revoluteJointDef);
+	var jointRev = world.CreateJoint(revoluteJointDef);
+
+	return jointRev;
 }
-function createDistanceJoint(teste5, tx5, ty5, teste1, tx1, ty1)
+
+function createDistanceJoint(joint_, jx, jy, ball, bx, by)
 {
 	var myjoint = new b2DistanceJointDef();
-	var worldAnchorOnBody1 = new b2Vec2(tx5/SCALE, ty5/SCALE);
-	var worldAnchorOnBody2 = new b2Vec2(tx1/SCALE, ty1/SCALE);
-	myjoint.Initialize(teste5, teste1, worldAnchorOnBody1,worldAnchorOnBody2);
-	myjoint.collideConnected = true;
-	myjoint.frequencyHz = 1.0;
-	myjoint.dampingRatio = 0.1;
-	var distance_joint = world.CreateJoint(myjoint);
+	var worldAnchorOnBody1 = new b2Vec2(jx/SCALE, jy/SCALE);
+	var worldAnchorOnBody2 = new b2Vec2(bx/SCALE, by/SCALE);
+	myjoint.Initialize(joint_, ball, worldAnchorOnBody1,worldAnchorOnBody2);
+//	myjoint.collideConnected = true;
+	myjoint.frequencyHz = 0.001;
+	myjoint.dampingRatio = 10;
+	var jointDist = world.CreateJoint(myjoint);
 
+	return jointDist;
 }
-function createPrismaticJoint(teste5, tx5, ty5, teste1, tx1, ty1, teste2, tx2, ty2)
+
+function createPrismaticJoint(axle, axl, ayl, joint1, jtx1, jty1, joint2, jyx2, jty2)
 {
-	var yy = Math.cos(angle);
-	var xx = Math.sin(angle);
 	var prismaticJointDef = new b2PrismaticJointDef();
-	var worldaxis = new b2Vec2(xx,yy);
-	prismaticJointDef.Initialize(teste5, teste1, teste2.GetWorldCenter(), worldaxis);
-	prismaticJointDef.lowerTranslation = -10; // in the direction of vector
-	prismaticJointDef.upperTranslation = 10; // opposite the direction of vector
-	prismaticJointDef.enableLimit = false;
+	prismaticJointDef.lowerTranslation = -20/SCALE; // in the direction of vector
+	prismaticJointDef.upperTranslation = 5/SCALE; // opposite the direction of vector
+	prismaticJointDef.enableMotor = true;
+	prismaticJointDef.enableLimit = true;
+//	var yy = Math.cos(angle);
+//	var xx = Math.sin(angle);
+	var worldaxis = new b2Vec2(0,1);
+	prismaticJointDef.Initialize(axle, joint1, joint1.GetWorldCenter(), worldaxis);
 	var prismatic_joint1 = world.CreateJoint(prismaticJointDef);
 
-	worldaxis.x = -xx;
-	worldaxis.y = yy;
-	prismaticJointDef.Initialize(teste5, teste1, teste2.GetWorldCenter(), worldaxis);
+//	worldaxis.x = -xx;
+//	worldaxis.y = yy;
+	prismaticJointDef.Initialize(axle, joint2, joint2.GetWorldCenter(), worldaxis);
 	var prismatic_joint2 = world.CreateJoint(prismaticJointDef);
+
+//	return prismatic_joint1, prismatic_joint2;
 }
+/*
+function drawHill(pixelStep,xOffset,yOffset)
+	{
+		var hillStartY = yOffset;
+		var hillWidth = 640;
+		var hillSliceWidth = hillWidth/pixelStep;
+		var hillVector = {};
+		var randomHeight = Math.random()*100;
+		var j = 0, z = 0;
+		if (xOffset!=0)
+		{
+			hillStartY -= randomHeight;
+		}
+		for (j = 0; j<hillSliceWidth; j++) {
+			hillVector = {};
+			var sliceBody = new b2BodyDef  ;
+			var centre = findCentroid(hillVector,hillVector.length);
+			sliceBody.position.Set(centre.x,centre.y);
+			for (z=0; z<hillVector.length; z++) {
+				hillVector[z].Subtract(centre);
+			}
+			var slicePoly=new b2PolygonShape  ;
+			slicePoly.SetAsVector(hillVector,4);
+			var sliceFixture=new b2FixtureDef  ;
+				fixDef.shape.SetAsArray([
+				new b2Vec2((j*pixelStep+xOffset)/SCALE,480/SCALE),
+				new b2Vec2((j*pixelStep+xOffset)/SCALE,(hillStartY+randomHeight*Math.cos(2*Math.PI/hillSliceWidth*j))/SCALE),
+				new b2Vec2(((j+1)*pixelStep+xOffset)/SCALE,(hillStartY+randomHeight*Math.cos(2*Math.PI/hillSliceWidth*(j+1)))/SCALE),
+				new b2Vec2(((j+1)*pixelStep+xOffset)/SCALE,480/SCALE)
+				]);
+			sliceFixture.shape=slicePoly;
+			var worldSlice=world.CreateBody(sliceBody);
+			worldSlice.CreateFixture(sliceFixture);
+		}
+		hillStartY=hillStartY+randomHeight;
+		return (hillStartY);
+	}
+function findCentroid(vs, count)
+{
+		var c = new b2Vec2();
+		var i = 0;
+		var area=0.0;
+		var p1X=0.0;
+		var p1Y=0.0;
+		var inv3=1.0/3.0;
+		for (i = 0; i < count; ++i) {
+			var p2=vs[i];
+			var p3=i+1<count?vs[i+1]:vs[0];
+			var e1X=p2.x-p1X;
+			var e1Y=p2.y-p1Y;
+			var e2X=p3.x-p1X;
+			var e2Y=p3.y-p1Y;
+			var D = (e1X * e2Y - e1Y * e2X);
+			var triangleArea=0.5*D;
+			area+=triangleArea;
+			c.x += triangleArea * inv3 * (p1X + p2.x + p3.x);
+			c.y += triangleArea * inv3 * (p1Y + p2.y + p3.y);
+		}
+		c.x*=1.0/area;
+		c.y*=1.0/area;
+		return c;
+	}
+*/
+
+function drawHill(numberOfHills, pixelStep)
+{
+	var hillStartY = Math.floor((Math.random()*150)+110); //Math.random()*200;
+	var hillWidth = 600/numberOfHills;
+	var hillSlices = hillWidth / pixelStep;
+	var hillPointX;
+	var hillPointY;
+	var points = new Array();
+
+	for (var i=0; i<numberOfHills; i++)
+	{
+		var randomHeight = Math.random()*10;
+		if(i!=0)
+		{
+			hillStartY-=randomHeight;
+		}
+		for (var j=0; j<=hillSlices; j++)
+		{
+			hillPointX=j*pixelStep+hillWidth*i;
+			hillPointY=hillStartY-randomHeight*Math.sin(-(Math.PI/2)+2*Math.PI/hillSlices*j);
+			if(j!=0)
+			{
+				var bodyDef = new b2BodyDef;
+				bodyDef.type = b2Body.b2_staticBody;
+//				bodyDef.userData = 'terrain';
+
+				var fixDef = new b2FixtureDef;
+				fixDef.density = 10.0;
+				fixDef.friction = 0.5;
+				fixDef.restitution = .5;
+				fixDef.shape = new b2PolygonShape;
+				fixDef.shape.SetAsArray([
+						new b2Vec2(px/30, py/10),
+						new b2Vec2(hillPointX/30 , hillPointY/10),
+						new b2Vec2(hillPointX/30, 480/10),
+						new b2Vec2(px/30, 480/10)
+						]);
+				world.CreateBody(bodyDef).CreateFixture(fixDef);
+			}
+			px = hillPointX;
+			py = hillPointY;
+		}
+		hillStartY = hillStartY+randomHeight;
+	}
+}
+
+
+////interaction keyboard
+//var steerforward = false;
+//var steerbackward = false;
+//var resetcar = false;
+////Interact
+//$(window).keydown(function(e) {
+//    var code = e.keyCode;
+//	if(code == 39)
+//		steerforward = true;
+//	if(code == 37)
+//		steerbackward = true;
+//	if(code == 82)
+//		resetcar = true;
+//});
+//$(window).keyup(function(e) {
+//	var code2 = e.keyCode;
+//	if(code2 == 39)
+//		steerforward = false;
+//	if(code2 == 37)
+//		steerbackward = false;
+//	if(code2 == 82)
+//		resetcar = false;
+//});
+
+//
+addEventListener("keydown", function (e) {
+	keysDown[e.keyCode] = true;
+}, false);
+
+addEventListener("keyup", function (e) {
+	delete keysDown[e.keyCode];
+}, false);
+
+//	switch(keysDown)
+//	{
+//		case 37:
+//			left = true;
+//			console.log("left");
+//			break;
+//		case 39:
+//			right = true;
+//			console.log("right");
+//			break;
+//	}
+//	switch(keyup)
+//	{
+//		case 37:
+//			left = false;
+//			break;
+//		case 39:
+//			right = false;
+//			break;
+//	}
+
+//	A.GetWorldCenter().x*30;
+//interaction mouse
+//function pressHandler( e ) {
+//	var offset = { x: this.x - e.stageX };
+//	e.onMouseMove = function ( ev ) {
+//	if( ev.stageX < 480 )
+//		if( ev.stageX + offset.x <= 380 && ev.stageX + offset.x >= 5 )
+//			e.target.x = ev.stageX + offset.x;
+//	}
+//}
