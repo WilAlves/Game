@@ -101,7 +101,7 @@ var car = function()
 	myjoint.Initialize(axle2, car, car.GetWorldCenter(),new b2Vec2(xxx-1,yyy+.35));
 	var distance_joint1 = world.CreateJoint(myjoint);myjoint.collideConnected = true;
 	
-	return car;
+	return (car);
 	//
 	//		var cw = $('#cover').width();
 	//		var dw = $('#canvas').width();

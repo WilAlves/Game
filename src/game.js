@@ -13,7 +13,7 @@ function init() {
 	createBox(310,008,310,010,40,.8,.1,b2Body.b2_staticBody,false,null);
 	createBox(008,310,008,310,40,.8,.1,b2Body.b2_staticBody,false,null);
 	createBox(008,310,595,310,40,.8,.1,b2Body.b2_staticBody,false,null);
-/*
+
 	//axle Car
 	roof     = createBox(30,07,275,345,10,.8,.2,b2Body.b2_dynamicBody,false,null);
 	axle     = createBox(43,02,275,355,10,.8,.2,b2Body.b2_dynamicBody,false,document.getElementById("car"));
@@ -33,13 +33,13 @@ function init() {
 	B = createRevolutionJoint(ball2, 300, 375, joint2, 300, 375);
 
 	C = createPrismaticJoint( axle, 275, 355, joint1, 250, 375, joint2, 300, 375);
-*/
+
 	debugDraw();
 
 	terrainY = terrain(10, 0, terrainY);
-	var carro = new car();
-	carro.x = 10;
-	carro.y = 10;
+//	var carro = new car();
+//	carro.x = 10;
+//	carro.y = 10;
 
 //	ground = new Ground();
 //	ground.x = 0;
@@ -75,13 +75,30 @@ function init() {
 	Ticker.setFPS(16);
 	Ticker.addListener(window);
 
-};
+	var cw = canvas.width;
+	var dw = canvas.width;
+	var p2 = (roof.GetWorldCenter().x)*30;
+	var halfwidth = (cw/2);
+	if((p2>halfwidth) && ((dw-p2)>halfwidth))
+	{
+		context.translate(-(p2-halfwidth),0);
+	}
+	else if((dw-p2)<halfwidth)	{
+		context.translate(-(dw-cw),0);
+	}
 
+	var pos = new Array();
+	var length;
+	pos[0] = roof.GetWorldCenter().x*30;
+
+}
 function tick() {
 
 	stage.update();
 //	ground1.update();
 //	ground.update();
+a = roof.GetWorldCenter().x;
+console.log(a);
 
 	if(x % 30 == 0)
 	{
@@ -89,17 +106,17 @@ function tick() {
 		terrainY = terrain(10, (-x+30), terrainY);
 	}
 	x--;
-	console.log(x);
+//	console.log(terrainY.SetPosition().x);
 
 	if (37 in keysDown)
 	{
 		console.log("left");
-//		motorSpeed+=0.5;
+		motorSpeed+=0.8;
 	}
 	if (39 in keysDown)
 	{
 		console.log("right");
-//		motorSpeed-=0.5;
+		motorSpeed-=0.8;
 	}
 	motorSpeed*=0.99;
 	if (motorSpeed>100)
@@ -108,11 +125,13 @@ function tick() {
 	}
 		console.log(motorSpeed);
 
-//	A.SetMotorSpeed(motorSpeed);
-//	B.SetMotorSpeed(motorSpeed);
+	A.SetMotorSpeed(motorSpeed);
+	B.SetMotorSpeed(motorSpeed);
 
 	world.Step(1 / 60, 10, 10);
 	world.DrawDebugData();
+
+
 
 //	for(var b = world.m_bodyList; b != null; b = b.m_next){
 //		if(b.GetUserData()){

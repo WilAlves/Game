@@ -8,7 +8,7 @@ var terrain = function(pixelStep, xOffset, yOffset)
 		var hillPointY;
 		var points = new Array();
 
-		var randomHeight = Math.random()*10;
+		var randomHeight = Math.random()*30;
 			if(xOffset!=0)
 			{
 				hillStartY-=randomHeight;
@@ -24,6 +24,7 @@ var terrain = function(pixelStep, xOffset, yOffset)
 					bodyDefTerrain.type = b2Body.b2_kinematicBody;
 					bodyDefTerrain.allowSleep = false;
 					bodyDefTerrain.linearDamping = 10.0;
+					bodyDefTerrain.position.x = -22;
 
 					var fixDef = new b2FixtureDef;
 					fixDef.density = 10.0;
@@ -42,6 +43,7 @@ var terrain = function(pixelStep, xOffset, yOffset)
 				py = hillPointY;
 			}
 			hillStartY = hillStartY+randomHeight;
+
 	return(hillStartY);
 
 }
