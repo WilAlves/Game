@@ -1,4 +1,4 @@
-var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5, left = false, right = false, motorSpeed = 0, keysDown = {}, nextHill;
+var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5, left = false, right = false, motorSpeed = 0, keysDown = {}, drawHillY = 123, x = 600;
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 	, b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -185,31 +185,29 @@ function findCentroid(vs, count)
 	}
 */
 
-function drawHill(numberOfHills, pixelStep)
+function drawHill(pixelStep, xOffset, yOffset)
 {
-	var hillStartY = Math.floor((Math.random()*150)+110); //Math.random()*200;
-	var hillWidth = 600/numberOfHills;
+	var hillStartY = yOffset;//Math.floor((Math.random()*150)+110); //Math.random()*200;
+	var hillWidth = 600;
 	var hillSlices = hillWidth / pixelStep;
 	var hillPointX;
 	var hillPointY;
 	var points = new Array();
 
-	for (var i=0; i<numberOfHills; i++)
-	{
-		var randomHeight = Math.random()*10;
-		if(i!=0)
+		var randomHeight = Math.random()*23;
+		if(xOffset!=0)
 		{
 			hillStartY-=randomHeight;
 		}
 		for (var j=0; j<=hillSlices; j++)
 		{
-			hillPointX=j*pixelStep+hillWidth*i;
+			hillPointX=j*pixelStep+xOffset;
 			hillPointY=hillStartY-randomHeight*Math.sin(-(Math.PI/2)+2*Math.PI/hillSlices*j);
 			if(j!=0)
 			{
 				var bodyDef = new b2BodyDef;
-				bodyDef.type = b2Body.b2_staticBody;
-//				bodyDef.userData = 'terrain';
+				bodyDef.type = b2Body.b2_kinematicBody;
+				bodyDef.userData = document.getElementById("terrain");
 
 				var fixDef = new b2FixtureDef;
 				fixDef.density = 10.0;
@@ -222,13 +220,15 @@ function drawHill(numberOfHills, pixelStep)
 						new b2Vec2(hillPointX/30, 480/10),
 						new b2Vec2(px/30, 480/10)
 						]);
-				world.CreateBody(bodyDef).CreateFixture(fixDef);
+				var aa = world.CreateBody(bodyDef);
+				aa.CreateFixture(fixDef);
+				aa.SetLinearVelocity(new b2Vec2(-5,0));
 			}
 			px = hillPointX;
 			py = hillPointY;
 		}
 		hillStartY = hillStartY+randomHeight;
-	}
+	return (hillStartY);
 }
 
 

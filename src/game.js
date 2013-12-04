@@ -9,7 +9,7 @@ function init() {
 	height = canvas.height;
 
 	//background
-	createBox(310,008,310,415,40,.8,.1,b2Body.b2_staticBody,false,null);
+//	createBox(310,008,310,415,40,.8,.1,b2Body.b2_staticBody,false,null);
 	createBox(310,008,310,010,40,.8,.1,b2Body.b2_staticBody,false,null);
 	createBox(008,310,008,310,40,.8,.1,b2Body.b2_staticBody,false,null);
 	createBox(008,310,595,310,40,.8,.1,b2Body.b2_staticBody,false,null);
@@ -55,7 +55,7 @@ function init() {
 //	axle     = createBox(45,10,285,400,30,.8,1,b2Body.b2_dynamicBody,false,null);
 
 	debugDraw();
-	drawHill(2,10);
+	drawHillY = drawHill(10,0,drawHillY);
 //	nextHill=drawHill(10,0,nextHill);
 //	nextHill=drawHill(10,640,nextHill);
 
@@ -101,6 +101,11 @@ function tick() {
 	ground1.update();
 	ground.update();
 
+	if(x % 600 == 0)
+	{
+		drawHillY = drawHill(10, x, drawHillY);
+		x += 600;
+	}
 
 	if (37 in keysDown)
 	{
