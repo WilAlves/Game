@@ -10,7 +10,14 @@
 	<body>
 		<canvas id="canvas"  width="600" height="420"></canvas>
 		<button id="btStart1" onclick="document.location = 'index.html'" >start</button>
-		<button id="btStart2">option</button>
-		<button id="btStart3">exit</button>
+		<button id="btStart2" onclick="document.location = 'option.html'">option</button>
+		<button id="btStart3" onClick="FecharJanela();">exit</button>
+		<script>
+			function FecharJanela()
+			{
+				ww = open(location,"_self");
+				ww.close();
+			}
+			</script>
 	</body>
 </html>
