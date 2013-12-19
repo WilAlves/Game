@@ -15,14 +15,14 @@ function init() {
 
 	//create car
 	//axle Car
-	roof     = createBox(25,07,275,280,1,.2,.5,b2Body.b2_dynamicBody,false,null);
-	axle     = createBox(40,02,275,290,1,.2,.5,b2Body.b2_dynamicBody,false,document.getElementById("car"));
+	roof     = createBox(25,07,275,280,.5,3,.3,b2Body.b2_dynamicBody,false,null);
+	axle     = createBox(40,02,275,290,.5,3,.3,b2Body.b2_dynamicBody,false,document.getElementById("car"));
 	//joints and ball left
-	joint1   = createBox(05,05,250,310,1,.2,.5,b2Body.b2_dynamicBody,true,null);
-	ball1    = createBall(   250,310,  1, 1,.5,b2Body.b2_dynamicBody,document.getElementById("roda"));
+	joint1   = createBox(05,05,250,310,.5,3,.3,b2Body.b2_dynamicBody,true,null);
+	ball1    = createBall(   250,310,  1, 3,.1,b2Body.b2_dynamicBody,document.getElementById("roda"));
 	//joints and ball right
-	joint2   = createBox(05,05,300,310,1,.2,.5,b2Body.b2_dynamicBody,true,null);
-	ball2    = createBall (  300,310,  1, 1,.5,b2Body.b2_dynamicBody,document.getElementById("roda"));
+	joint2   = createBox(05,05,300,310,.5,3,.3,b2Body.b2_dynamicBody,true,null);
+	ball2    = createBall (  300,310,  1, 3,.1,b2Body.b2_dynamicBody,document.getElementById("roda"));
 	Y = createRevolutionJoint(roof, 275, 280, joint1, 250, 310);
 	Y = createRevolutionJoint(roof, 275, 280, joint2, 290, 310);
 	A = createRevolutionJoint(ball1, 250, 310, joint1, 250, 310);

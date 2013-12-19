@@ -79,8 +79,8 @@ function createRevolutionJoint(axle, ax, ay, joint, jx, jy)
 {
 	var revoluteJointDef = new b2RevoluteJointDef();
 	revoluteJointDef.Initialize(axle, joint, joint.GetWorldCenter());
-	revoluteJointDef.maxMotorTorque = 10000;
 	revoluteJointDef.enableMotor = true;
+	revoluteJointDef.maxMotorTorque = 10000;
 	var jointRev = world.CreateJoint(revoluteJointDef);
 
 	return jointRev;
