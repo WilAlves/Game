@@ -1,0 +1,21 @@
+<html>
+   <head>
+      <title>Quick'n'Dirty Dakar rally sim in JS</title>
+      <meta name="viewport" content="width=device-width">
+   </head>
+   <body onload="init();">
+      <div>Speed: <div style="display: inline" id="speed"></div> kmh</div>
+      <div>Height: <div style="display: inline" id="height"></div> meters</div>
+      <div>Distance: <div style="display: inline" id="distance"></div> meters</div>
+      <div>Engine torque: <div style="display: inline" id="torque"></div> n/m??</div>
+	  <div>Log: <div style="display: inline" id="log"></div></div>
+      <canvas id="canvas" width="100%" height="100%" style="background-color:#333333;" ></canvas>
+   </body>
+   <script type="text/javascript" src="./engine/Box2dWeb-2.1.a.3.min.js"></script>
+   <script type="text/javascript" src="seedrandom.js"></script>
+   <!--<script type="text/javascript" src="Box2dmin.js"></script>-->
+   <script type="text/javascript" src="dakar.js"></script>
+</script>
+
+
+</html>
