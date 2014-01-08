@@ -1,4 +1,4 @@
-var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5, left = false, right = false, motorSpeed = 0, keysDown = {}, drawHillY = 115, x = 600, game = true;
+var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5, left = false, right = false, motorSpeed = 0, keysDown = {}, drawHillY = 115, x = 600, game = true, y = 0;
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 	, b2BodyDef = Box2D.Dynamics.b2BodyDef

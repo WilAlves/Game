@@ -28,12 +28,14 @@ function init() {
 	A = createRevolutionJoint(ball1, 250, 310, joint1, 250, 310);
 	B = createRevolutionJoint(ball2, 300, 310, joint2, 300, 310);
 	C = createPrismaticJoint( axle, 275, 290, joint1, 250, 310, joint2, 300, 310);
+//	axle.GetPosition().x = 0;
 
 	//create debugDraw
 	debugDraw();
 
 	//created background
 	drawHillY = drawHill(10,0,drawHillY);
+	drawHillY = drawHill(10,600,drawHillY);
 	ground = new Ground();
 	ground.x = 0;
 	ground.y = 0;
@@ -69,28 +71,35 @@ function tick() {
 	ground1.update();
 	ground.update();
 
+
+	document.getElementById("distance").innerHTML = x;
+//	if(y ==  300)
+//		alert("ganhou");
+//	y++;
+
 	if(x % 600 == 0)
 	{
-		drawHillY = drawHill(10, x, drawHillY);
-		x += 600;
+		drawHillY = drawHill(10, x+600, drawHillY);
+//		x += 1;
 	}
+	x += 100;
 
 	if (37 in keysDown)
 	{
-		console.log("left");
+//		console.log("left");
 		motorSpeed+=0.5;
 	}
 	if (39 in keysDown)
 	{
-		console.log("right");
+//		console.log("right");
 		motorSpeed-=0.5;
 	}
 	motorSpeed*=0.99;
-//	if (motorSpeed>100)
-//	{
-//		motorSpeed=100;
-//	}
-		console.log(motorSpeed);
+	if (motorSpeed>100)
+	{
+		motorSpeed=100;
+	}
+//		console.log(motorSpeed);
 
 	A.SetMotorSpeed(motorSpeed);
 	B.SetMotorSpeed(motorSpeed);
