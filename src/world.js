@@ -1,4 +1,4 @@
-var world, stage = null, canvas, width, heigth, SCALE = 32, ground, player, obstacle, Collision, skin, angle = Math.PI/6.5, left = false, right = false, motorSpeed = 0, keysDown = {}, drawHillY = 115, x = 600, game = true;
+var world, canvas, width, heigth, SCALE = 32, motorSpeed = 0, keysDown = {}, drawHillY = 115, x = 0;
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 	, b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -132,13 +132,12 @@ function drawHill(pixelStep, xOffset, yOffset)
 		}
 		for (var j=0; j<=hillSlices; j++)
 		{
-			hillPointX=j*pixelStep+xOffset;
-			hillPointY=hillStartY-randomHeight*Math.sin(-(Math.PI/2)+2*Math.PI/hillSlices*j);
+			hillPointX = j * pixelStep + xOffset;
+			hillPointY = hillStartY-randomHeight*Math.sin(-(Math.PI/2)+2*Math.PI/hillSlices*j);
 			if(j!=0)
 			{
 				var bodyDef = new b2BodyDef;
 				bodyDef.type = b2Body.b2_kinematicBody;
-				bodyDef.userData = document.getElementById("terrain");
 
 				var fixDef = new b2FixtureDef;
 				fixDef.density = .8;
