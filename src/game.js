@@ -38,6 +38,13 @@ function init() {
 
 	//created obstacles
 
+	//sound
+	var somBd = document.getElementById("somBd");
+	var som = document.getElementById("som");
+	var som1 = document.getElementById("som1");
+
+	somBd.play();
+
 	setTimeout(update, 1000/60);
 };
 
@@ -47,10 +54,17 @@ function update() {
 		drawHillY = drawHill(10, x+600, drawHillY);
 
 	if (37 in keysDown)
+	{
 		motorSpeed+=0.5;
+		som1.play();
+	}
+
 
 	if (39 in keysDown)
+	{
 		motorSpeed-=0.5;
+		som.play();
+	}
 
 	motorSpeed*=0.99;
 
