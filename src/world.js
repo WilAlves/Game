@@ -1,4 +1,4 @@
-var world, canvas, width, heigth, SCALE = 32, motorSpeed = 0, keysDown = {}, drawHillY = 115, x = 0;
+var world, canvas, width, heigth, SCALE = 32, motorSpeed = 0, keysDown = {}, drawHillY = 115, x = 0, state = true, loop;
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 	, b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -130,7 +130,7 @@ function drawHill(pixelStep, xOffset, yOffset)
 		{
 			hillStartY-=randomHeight;
 		}
-		for (var j=0; j<=hillSlices; j++)
+		for (var j=0; j<=hillSlices+2; j++)
 		{
 			hillPointX = j * pixelStep + xOffset;
 			hillPointY = hillStartY-randomHeight*Math.sin(-(Math.PI/2)+2*Math.PI/hillSlices*j);
@@ -169,3 +169,23 @@ addEventListener("keydown", function (e) {
 addEventListener("keyup", function (e) {
 	delete keysDown[e.keyCode];
 }, false);
+
+var clear = function(){
+	ctx.fillStyle = '#000000';
+	ctx.clearRect(0, 0, width, height);
+	ctx.beginPath();
+	ctx.rect(0, 0, width, height);
+	ctx.closePath();
+	ctx.fill();
+}
+
+var GameOver = function(){
+	state = false;
+	clearTimeout(loop);
+	clear();
+
+	ctx.fillStyle = "Red";
+	ctx.font = "20pt Arial";
+	ctx.fillText("You Win!", 250, 100);
+	ctx.fillText("Congratulations!", 210, 150);
+};

@@ -31,6 +31,11 @@ function init() {
 	//create debugDraw
 	debugDraw();
 
+	//created images
+	var imgBand = new Image();//document.getElementById("bandeira");
+	imgBand.src = "./img/bandeira.png";
+//	ctx.drawImage(imgBand, xxx, 10);
+
 	//background
 
 	//created hill
@@ -38,14 +43,17 @@ function init() {
 
 	//created obstacles
 
+
 	//sound
 	var somBd = document.getElementById("somBd");
 	var som = document.getElementById("som");
 	var som1 = document.getElementById("som1");
 
 	somBd.play();
-
-	setTimeout(update, 1000/60);
+	if(state)
+	{
+		loop = setTimeout(update, 1000/60);
+	}
 };
 
 function update() {
@@ -89,6 +97,12 @@ function update() {
 
 	document.getElementById("distance").innerHTML = y++;
 
+
+	if(y == 373)
+	{
+		GameOver();
+	}
+
 //	for (var currentBody = world.GetBodyList(); currentBody; currentBody=currentBody.GetNext())
 //	{
 //		if(currentBody.GetType() == b2Body.b2_kinematicBody)
@@ -96,7 +110,10 @@ function update() {
 //				world.DestroyBody(currentBody);
 //	}
 
-	setTimeout(update, 1000/60);
+	if(state)
+	{
+		loop = setTimeout(update, 1000/60);
+	}
 	world.ClearForces();
 	x += 150;
 };
