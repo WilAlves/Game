@@ -31,10 +31,6 @@ function init() {
 	//create debugDraw
 	debugDraw();
 
-	//created images
-	var imgBand = new Image();//document.getElementById("bandeira");
-	imgBand.src = "./img/bandeira.png";
-//	ctx.drawImage(imgBand, xxx, 10);
 
 	//background
 
@@ -97,6 +93,7 @@ function update() {
 
 	document.getElementById("distance").innerHTML = y++;
 
+	ctx.drawImage(imgBand, imgWin-=5, 250);
 
 	if(y == 373)
 	{

@@ -1,4 +1,4 @@
-var world, canvas, width, heigth, SCALE = 32, motorSpeed = 0, keysDown = {}, drawHillY = 115, x = 0, state = true, loop;
+var world, canvas, width, heigth, SCALE = 32, motorSpeed = 0, keysDown = {}, drawHillY = 115, x = 0, state = true, loop, imgWin = 2200;
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 	, b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -177,7 +177,7 @@ var clear = function(){
 	ctx.rect(0, 0, width, height);
 	ctx.closePath();
 	ctx.fill();
-}
+};
 
 var GameOver = function(){
 	state = false;
@@ -189,3 +189,8 @@ var GameOver = function(){
 	ctx.fillText("You Win!", 250, 100);
 	ctx.fillText("Congratulations!", 210, 150);
 };
+
+//created images
+	var imgBand = new Image();
+	imgBand.src = "./img/bandeira.png";
+
