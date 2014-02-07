@@ -44,6 +44,7 @@ function init() {
 	var somBd = document.getElementById("somBd");
 	var som = document.getElementById("som");
 	var som1 = document.getElementById("som1");
+	var f1 = document.getElementById("f1");
 
 	somBd.play();
 	if(state)
@@ -94,6 +95,12 @@ function update() {
 	document.getElementById("distance").innerHTML = y++;
 
 	ctx.drawImage(imgBand, imgWin-=5, 250);
+	if(y == 250)
+	{
+		somBd.pause();
+		f1.play();
+	}
+
 
 	if(y == 373)
 	{
